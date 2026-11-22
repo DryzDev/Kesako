@@ -1,2 +1,2 @@
-# K-sako
+# Késako
 Jeu de définiton de mot
