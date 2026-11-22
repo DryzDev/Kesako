@@ -15,10 +15,11 @@ box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:en
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17110d;--bg2:#32231a;--ink:#f3e8d2;--paper:#2a211a;--accent:#ee7b55;--gold:#e3b04b;--ok:#4cc27a;--ko:#ef6a5a;--line:#4a3a2c;--cover:#8f3a25;--cover2:#4d1a0f;color-scheme:dark}}
 :root[data-theme="dark"]{--bg:#17110d;--bg2:#32231a;--ink:#f3e8d2;--paper:#2a211a;--accent:#ee7b55;--gold:#e3b04b;--ok:#4cc27a;--ko:#ef6a5a;--line:#4a3a2c;--cover:#8f3a25;--cover2:#4d1a0f;color-scheme:dark}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;margin:0}
+html,body{height:100%;margin:0;overflow-x:hidden}
 body{background:radial-gradient(ellipse at 50% 30%,var(--bg2),var(--bg) 72%);color:var(--ink);font-family:var(--fb);overflow-x:hidden}
-main{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;position:relative;z-index:1}
+main{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:14px;position:relative;z-index:1;overflow-x:clip;width:100%}
 .hidden{display:none!important}
+#home,#stage{margin-top:auto;margin-bottom:auto}
 #bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
 #bg span{position:absolute;font-family:var(--ff);font-weight:800;color:var(--accent);opacity:0;will-change:transform,opacity;animation:drift var(--t) linear var(--w) infinite}
 @keyframes drift{0%{opacity:0;transform:translate3d(0,40px,0) rotate(var(--r))}15%{opacity:.12}85%{opacity:.12}100%{opacity:0;transform:translate3d(var(--dx),-110vh,0) rotate(calc(var(--r)*-1))}}
@@ -105,6 +106,8 @@ main:has(#stage:not(.hidden)) #gearH{display:none}
 #set input[type=range]{flex:1;min-width:0}
 #set .btn{display:block;margin:1.2rem auto 0;padding:.6rem 1.8rem;font-size:1rem}
 .pt{position:fixed;z-index:50;width:9px;height:9px;border-radius:50%;pointer-events:none;left:0;top:0}
+@media (max-height:600px){#book{height:calc(100svh - 70px);min-height:340px}#page{padding:16px 20px}#mot{font-size:clamp(1.8rem,7vw,2.6rem)}.nat{margin-bottom:.6rem}.opts{gap:6px}.opt{padding:.5rem .75rem;font-size:.95rem}#fb{margin-top:.5rem;min-height:0}}
+@media (min-width:900px){#stage{width:min(70vw,640px)}}
 @media (pointer:coarse){#bg span{animation:none;opacity:.07}}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
 </style></head><body>
@@ -266,15 +269,23 @@ $("sfxOn").checked=Mus.sfxOn;$("sfxOn").onchange=e=>{Mus.sfxOn=e.target.checked;
 $("musOn").onchange=e=>Mus.setOn(e.target.checked);$("musVol").oninput=e=>Mus.setVol(e.target.value/100);
 document.addEventListener("pointerdown",()=>Mus.start(),{once:true});
 const warmP=initSample().then(()=>{refill();refill()});
+function scrollTop0(){try{window.scrollTo(0,0);document.body.scrollTop=0;document.documentElement.scrollTop=0}catch(e){}}
+let started=false;
+async function finishIntro(my){
+  if(started||my!==tok)return;started=true;
+  try{document.querySelectorAll("#cover,#book .pg.gen").forEach(e=>e.style.display="none");$("book").style.transform="none";$("top").classList.add("on");$("glow").style.opacity=".6"}catch(e){}
+  try{burst($("page"),36,true)}catch(e){}
+  await show(true,my);
+}
 function goHome(){
-  tok++;locked=true;const s=$("stage");s.classList.remove("go");s.classList.add("hidden");
+  tok++;locked=true;scrollTop0();const s=$("stage");s.classList.remove("go");s.classList.add("hidden");
   document.querySelectorAll("#book .pg.gen").forEach(e=>e.remove());
   $("turner").classList.add("hidden");$("turner").classList.remove("turn");$("inner").classList.remove("in");$("top").classList.remove("on");
   $("home").classList.remove("hidden");$("home").style.animation="none";void $("home").offsetWidth;$("home").style.animation="";upd();
 }
 $("homeBtn").onclick=goHome;
 $("play").onclick=async()=>{
-  const my=++tok;Mus.start();
+  const my=++tok;started=false;scrollTop0();$("cover").style.display="";$("book").style.transform="";setTimeout(()=>finishIntro(my),2600);Mus.start();
   $("home").classList.add("hidden");$("stage").classList.remove("hidden");
   const book=$("book");
   for(let i=0;i<7;i++){const d=document.createElement("div");d.className="pg gen";d.style.setProperty("--d",(0.35+(6-i)*0.08).toFixed(2)+"s");d.style.setProperty("--z",(0.6+i*0.6).toFixed(1)+"px");book.insertBefore(d,$("cover"))}
@@ -284,7 +295,7 @@ $("play").onclick=async()=>{
   requestAnimationFrame(()=>requestAnimationFrame(()=>$("stage").classList.add("go")));
   Mus.flip(.08,.8);for(let i=0;i<7;i++)Mus.flip(.38+(6-i)*.08,.5);
   await sleep(1450);if(my!==tok)return;
-  $("top").classList.add("on");try{burst($("page"),36,true)}catch(e){}await show(true,my);
+  await finishIntro(my);
 };
 
 async function show(first,my){
