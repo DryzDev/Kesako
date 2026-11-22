@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Késako ?</title>
+<meta name="description" content="Késako ? Un mot du dictionnaire, quatre définitions, une seule est la bonne. Quiz de vocabulaire français.">
+<meta property="og:title" content="Késako ?">
+<meta property="og:description" content="Un mot du dictionnaire, quatre définitions… saurez-vous trouver la bonne ?">
+<meta name="theme-color" content="#7a2e1d">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E📖%3C/text%3E%3C/svg%3E">
+
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Lora:wght@400;600&display=swap">
+<style>
+:root{--bg:#f6eddb;--bg2:#e9d5ab;--ink:#2b1d12;--paper:#fffaf0;--accent:#b3402a;--gold:#c9962e;--ok:#2f8f4e;--ko:#c0392b;--line:#dfcb9f;--cover:#7a2e1d;--cover2:#45160b;
+--ff:"Playfair Display",Georgia,"Times New Roman",serif;--fb:Lora,Georgia,serif;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#17110d;--bg2:#32231a;--ink:#f3e8d2;--paper:#2a211a;--accent:#ee7b55;--gold:#e3b04b;--ok:#4cc27a;--ko:#ef6a5a;--line:#4a3a2c;--cover:#8f3a25;--cover2:#4d1a0f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#17110d;--bg2:#32231a;--ink:#f3e8d2;--paper:#2a211a;--accent:#ee7b55;--gold:#e3b04b;--ok:#4cc27a;--ko:#ef6a5a;--line:#4a3a2c;--cover:#8f3a25;--cover2:#4d1a0f;color-scheme:dark}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(ellipse at 50% 30%,var(--bg2),var(--bg) 72%);color:var(--ink);font-family:var(--fb);overflow-x:hidden}
+main{min-height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:14px;position:relative;z-index:1}
+.hidden{display:none!important}
+#bg{position:fixed;inset:0;overflow:hidden;pointer-events:none;z-index:0}
+#bg span{position:absolute;font-family:var(--ff);font-weight:800;color:var(--accent);opacity:0;will-change:transform,opacity;animation:drift var(--t) linear var(--w) infinite}
+@keyframes drift{0%{opacity:0;transform:translate3d(0,40px,0) rotate(var(--r))}15%{opacity:.12}85%{opacity:.12}100%{opacity:0;transform:translate3d(var(--dx),-110vh,0) rotate(calc(var(--r)*-1))}}
+/* accueil */
+#home{display:flex;flex-direction:column;align-items:center;text-align:center;animation:fadeUp .9s cubic-bezier(.2,.8,.2,1) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px) scale(.96)}}
+.hbook{width:120px;height:150px;position:relative;margin-bottom:1.2rem;perspective:600px;animation:bob 4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-10px)}}
+.hbook i{position:absolute;inset:0;border-radius:4px 10px 10px 4px;transform-origin:left;background:linear-gradient(135deg,var(--cover),var(--cover2));border:2px solid var(--gold);box-shadow:0 18px 30px rgba(0,0,0,.35)}
+.hbook i:nth-child(1){background:var(--paper);border-color:var(--line);transform:translateX(6px)}
+.hbook i:nth-child(2){animation:peek 4s ease-in-out infinite}
+.hbook i:nth-child(2)::after{content:"?";position:absolute;inset:0;display:grid;place-items:center;font:800 3.4rem var(--ff);color:var(--gold)}
+@keyframes peek{50%{transform:rotateY(-35deg)}}
+h1{font:800 clamp(3.4rem,17vw,7rem)/1 var(--ff);margin:0;letter-spacing:-.02em;background:linear-gradient(100deg,var(--accent) 20%,var(--gold) 45%,var(--accent) 70%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 5s linear infinite}
+@keyframes shine{to{background-position:-250% 0}}
+.sub{opacity:.8;margin:.8rem 0 2.2rem;font-size:1.1rem;max-width:30ch;line-height:1.45}
+.btn{font:700 1.15rem var(--fb);border:0;border-radius:999px;padding:.85rem 2.2rem;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 85%,#fff),var(--accent));color:#fff;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.25),0 10px 30px color-mix(in srgb,var(--accent) 45%,transparent);transition:transform .12s,box-shadow .12s}
+.btn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.25)}
+.btn.big{font-size:1.5rem;padding:1rem 3.4rem;letter-spacing:.04em;animation:pulse 2.4s ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.06)}}
+.best{margin-top:1.5rem;opacity:.75;min-height:1.4em}
+/* scène */
+#stage{width:min(92vw,560px);display:flex;flex-direction:column;gap:10px;position:relative}
+#glow{position:absolute;left:50%;top:55%;width:160%;aspect-ratio:1;transform:translate(-50%,-50%);background:radial-gradient(circle,#ffd77a 0%,transparent 58%);opacity:0;pointer-events:none;transition:opacity 1.6s ease}
+.go #glow{opacity:.6}
+.top{display:flex;justify-content:space-between;align-items:center;font-weight:700;opacity:0;transform:translateY(-8px);transition:opacity .6s,transform .6s;position:relative}
+.top.on{opacity:1;transform:none}
+.pill{font:inherit;color:var(--ink);background:var(--paper);border:2px solid var(--line);padding:.3rem .9rem;border-radius:999px;cursor:pointer;box-shadow:0 2px 0 var(--line)}
+button.pill:active{transform:translateY(2px)}
+.streak.hot{border-color:var(--accent);animation:pop .45s}
+@keyframes pop{40%{transform:scale(1.3) rotate(-4deg)}}
+#wrap{perspective:2000px;position:relative}
+#book{position:relative;width:100%;height:min(calc(100svh - 110px),680px);min-height:520px;transform-style:preserve-3d;transform:translate3d(0,40px,-300px) rotateX(40deg) rotateY(-22deg);transition:transform 1.3s cubic-bezier(.5,0,.2,1);will-change:transform}
+.go #book{transform:translate3d(0,0,0)}
+.pg,#page{position:absolute;inset:0;border-radius:6px 16px 16px 6px}
+#page{background:var(--paper);border:1px solid var(--line);box-shadow:-8px 0 0 -2px var(--line),-13px 0 0 -5px var(--line),0 26px 50px rgba(0,0,0,.35);overflow:auto;padding:clamp(20px,5vw,36px)}
+#page::before{content:"";position:absolute;inset:9px;border:1px solid color-mix(in srgb,var(--gold) 55%,transparent);border-radius:4px 12px 12px 4px;pointer-events:none}
+.pg{transform-origin:left center;background:linear-gradient(90deg,var(--line),var(--paper) 9%,var(--paper));border:1px solid var(--line);transform:translateZ(var(--z));pointer-events:none;backface-visibility:hidden;will-change:transform,opacity}
+.pg::after{content:"";position:absolute;inset:0;border-radius:inherit;background:linear-gradient(90deg,rgba(0,0,0,.45),transparent 70%);opacity:0}
+.cv{background:linear-gradient(135deg,var(--cover),var(--cover2));border:2px solid var(--gold);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.6rem;color:#f3d98b;font:800 clamp(2.4rem,11vw,3.6rem) var(--ff);box-shadow:inset 0 0 40px rgba(0,0,0,.5)}
+.cv small{font:600 .8rem var(--fb);letter-spacing:.4em}
+.go .pg{animation:flip .55s var(--d) cubic-bezier(.4,0,.2,1) both}
+.go .pg::after{animation:shade .55s var(--d) ease both}
+.go .cv{animation:flip .8s .05s cubic-bezier(.4,0,.2,1) both}
+.go .cv::after{animation:shade .8s .05s ease both}
+.go .pg.turn{animation:turnpg 1.05s cubic-bezier(.45,.05,.3,1) both;z-index:5}
+.go .pg.turn::after{animation:shade 1.05s ease both}
+#turner{padding:clamp(20px,5vw,36px);overflow:hidden;background:var(--paper);box-shadow:0 0 30px rgba(0,0,0,.3)}
+#turner *{animation:none!important;transition:none!important}
+@keyframes turnpg{0%{transform:translateZ(var(--z)) rotateY(0);opacity:1}90%{opacity:1}100%{transform:translateZ(var(--z)) rotateY(-180deg);opacity:0}}
+@keyframes flip{0%{transform:translateZ(var(--z)) rotateY(0);opacity:1}72%{transform:translateZ(var(--z)) rotateY(-118deg);opacity:1}100%{transform:translateZ(var(--z)) rotateY(-180deg);opacity:0}}
+@keyframes shade{50%{opacity:.7}100%{opacity:0}}
+#inner{opacity:0;transform:translateY(12px);transition:opacity .5s,transform .5s;position:relative}
+#inner.in{opacity:1;transform:none}
+.chap{text-align:center;font-size:.75rem;letter-spacing:.35em;text-transform:uppercase;color:var(--gold);margin:0;font-weight:600}
+.orn{text-align:center;color:var(--accent);font-size:1.3rem;margin:.1rem 0 .2rem}
+#mot{font:800 clamp(2.3rem,11vw,3.8rem)/1.05 var(--ff);margin:0;text-align:center;color:var(--accent);word-break:break-word}
+#mot span{display:inline-block;animation:rise .7s calc(var(--i)*25ms) cubic-bezier(.2,.9,.3,1.4) both}
+@keyframes rise{from{opacity:0;transform:translateY(24px) rotate(8deg) scale(.6)}}
+.nat{text-align:center;font-style:italic;opacity:.7;margin:.4rem 0 1.2rem;min-height:1.2em}
+.opts{display:grid;gap:10px}
+.opt{font:inherit;text-align:left;font-size:1rem;line-height:1.38;color:var(--ink);background:color-mix(in srgb,var(--paper) 70%,var(--bg2));border:2px solid var(--line);border-radius:14px;padding:.75rem .9rem;cursor:pointer;display:flex;gap:.75rem;align-items:flex-start;transition:transform .15s,border-color .2s,background .2s,box-shadow .2s;animation:optIn .5s calc(.1s + var(--k)*50ms) cubic-bezier(.2,.9,.3,1.2) both}
+@keyframes optIn{from{opacity:0;transform:translateX(24px)}}
+.opt b{flex:none;width:1.7rem;height:1.7rem;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:#fff;font:700 .85rem var(--ff)}
+.opt:hover:not(:disabled){border-color:var(--accent);transform:translateX(4px);box-shadow:0 4px 14px rgba(0,0,0,.15)}
+.opt:disabled{cursor:default;color:var(--ink)}
+.opt.ok{background:color-mix(in srgb,var(--ok) 24%,var(--paper));border-color:var(--ok)}
+.opt.ok b{background:var(--ok)}
+.opt.ko{background:color-mix(in srgb,var(--ko) 22%,var(--paper));border-color:var(--ko);animation:shake .4s}
+.opt.ko b{background:var(--ko)}
+@keyframes shake{25%{transform:translateX(-7px)}75%{transform:translateX(7px)}}
+#fb{text-align:center;margin-top:1rem;min-height:3.4rem;animation:fadeUp .4s both}
+#fb p{margin:0 0 .7rem;font-weight:700}
+#gearH{position:fixed;top:calc(env(safe-area-inset-top,0px) + 10px);right:12px;z-index:60}
+main:has(#stage:not(.hidden)) #gearH{display:none}
+#set{position:fixed;inset:0;z-index:100;display:grid;place-items:center;background:rgba(0,0,0,.5);animation:fadeUp .25s both}
+#set .card{background:var(--paper);border:2px solid var(--gold);border-radius:20px;padding:1.4rem;width:min(88vw,340px);box-shadow:0 20px 60px rgba(0,0,0,.45)}
+#set h3{font:800 1.5rem var(--ff);margin:0 0 1rem;color:var(--accent);text-align:center}
+#set label{display:flex;justify-content:space-between;align-items:center;gap:1rem;margin:.9rem 0;font-weight:600}
+#set input{accent-color:var(--accent)}
+#set input[type=checkbox]{width:1.5rem;height:1.5rem}
+#set input[type=range]{flex:1;min-width:0}
+#set .btn{display:block;margin:1.2rem auto 0;padding:.6rem 1.8rem;font-size:1rem}
+.pt{position:fixed;z-index:50;width:9px;height:9px;border-radius:50%;pointer-events:none;left:0;top:0}
+@media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
+</style></head><body>
+<div id="bg"></div>
+<main>
+<button class="pill" id="gearH" aria-label="Réglages">⚙️</button>
+<div id="home"><div class="hbook"><i></i><i></i></div><h1>Késako ?</h1>
+<p class="sub">Un mot du dictionnaire, quatre définitions… une seule est la bonne.</p>
+<button class="btn big" id="play">Jouer</button>
+<div class="best" id="bestHome"></div></div>
+
+<div id="stage" class="hidden"><div id="glow"></div>
+<div class="top" id="top"><button class="pill" id="homeBtn">🏠 Accueil</button><span class="pill streak" id="st">🔥 0</span><span class="pill" id="bs">🏆 0</span><button class="pill" id="gearG" aria-label="Réglages">⚙️</button></div>
+<div id="wrap"><div id="book">
+<div id="page"><div id="inner"><p class="chap" id="chap"></p><div class="orn">❦</div><h2 id="mot"></h2><p class="nat" id="nat"></p><div class="opts" id="opts"></div><div id="fb"></div></div></div>
+<div class="pg hidden" id="turner" style="--z:6px"></div>
+<div class="cv pg" id="cover" style="--z:5px"><span>📖</span><span>Késako ?</span><small>DICTIONNAIRE</small></div>
+</div></div></div>
+</main>
+<div id="set" class="hidden"><div class="card"><h3>Réglages</h3>
+<label><span>🎵 Musique</span><input type="checkbox" id="musOn"></label>
+<label><span>🔊 Volume</span><input type="range" id="musVol" min="0" max="100" step="1"></label>
+<label><span>🔔 Bruitages</span><input type="checkbox" id="sfxOn"></label>
+<button class="btn" id="setX">Fermer</button></div></div>
+<script>
+const W=[
+["Pérenne","Qui dure toujours ou très longtemps.","Qui change d’aspect selon les saisons.","Qui se répète à intervalles réguliers.","Poisson plat des eaux glacées du Nord."],
+["Gabegie","Désordre résultant d’une mauvaise gestion, gaspillage.","Grande joie bruyante après une victoire.","Petit récipient en bois pour la traite.","Danse traditionnelle exécutée sur des échasses."],
+["Quolibet","Plaisanterie railleuse lancée à quelqu’un.","Petit meuble pour ranger les livres.","Question posée à plusieurs reprises.","Oiseau migrateur au plumage bleu."],
+["Pusillanime","Qui manque de courage, craintif.","Qui est de très petite taille.","Qui fait preuve d’une grande générosité.","Qui ne fleurit qu’à la tombée de la nuit."],
+["Hapax","Mot dont on ne connaît qu’une seule occurrence.","Instrument à cordes d’Asie centrale.","Hoquet nerveux persistant.","Moteur à vapeur des premiers tramways."],
+["Atermoiement","Délai, hésitation qui retarde une décision.","Réchauffement brutal de la température.","Apaisement d’un conflit entre voisins.","Cuisson lente d’un ragoût en cocotte."],
+["Écueil","Rocher à fleur d’eau ; obstacle, danger.","Grande cuillère à soupe profonde.","Bruit sourd d’un orage lointain.","Petit de l’écureuil."],
+["Mansuétude","Indulgence, douceur envers autrui.","Habitude de vivre dans une maison de campagne.","Profonde tristesse sans cause précise.","Plante grimpante à fleurs jaunes."],
+["Rhizome","Tige souterraine vivace de certaines plantes.","Maladie de peau causée par un champignon.","Rythme lent propre à certaines musiques.","Outil de menuisier pour lisser le bois."],
+["Cénotaphe","Tombeau vide élevé à la mémoire d’un mort.","Pierre précieuse de couleur verte.","Personne qui craint le froid.","Mélange de farine et de miel."],
+["Gouaille","Manière railleuse et populaire de parler, verve.","Petite pluie fine et persistante.","Fruit sauvage des haies.","Voile triangulaire des barques de pêche lunaires."],
+["Sibyllin","Dont le sens obscur est difficile à comprendre.","Relatif aux sources thermales.","Doux comme un murmure.","Fabriqué en laine de mouton des Alpes."],
+["Ubiquité","Faculté d’être présent partout à la fois.","Caractère de ce qui est très ancien.","Habitude de se lever à l’aube.","Chapeau rigide porté par les facteurs."],
+["Sycophante","Délateur ; personne qui flatte bassement les puissants.","Médecin spécialisé dans les maladies de la gorge.","Personne qui hésite toujours avant de décider.","Ustensile servant à retourner les crêpes."],
+["Opiniâtre","Qui s’attache avec ténacité à ce qu’il a décidé.","Qui change d’avis à chaque conversation.","Qui donne son avis sans qu’on le demande.","Allergie saisonnière au pollen de bouleau."],
+["Prodrome","Signe avant-coureur d’un événement ou d’une maladie.","Vaste espace aménagé pour les courses de chevaux.","Ouvrage en plusieurs volumes consacré à la botanique.","Habitant d’une île légendaire."],
+["Vindicatif","Qui est porté à la vengeance, rancunier.","Qui aime beaucoup le vin.","Qui se vante de ses victoires.","Qui tourne toujours dans le sens des aiguilles d’une montre."],
+["Ostensible","Que l’on montre sans chercher à dissimuler.","Relatif aux os et à leur structure.","Qui vit dans l’opulence.","Qui se déplace uniquement la nuit."],
+["Bichonner","Soigner avec une attention minutieuse et tendre.","Embrasser quelqu’un à plusieurs reprises.","Parler sans s’arrêter.","Cuire à la vapeur dans une feuille de bananier."],
+["Fortuit","Qui arrive par hasard, de façon imprévue.","Qui est très solide, résistant.","Qui rend riche d’un seul coup.","Qui sent le fromage de chèvre."],
+["Atrabilaire","D’humeur sombre, irritable et chagrine.","Qui est très travailleur.","Qui souffre d’un trouble de la vue.","Qui danse avec grâce."],
+["Procrastiner","Remettre sans cesse au lendemain ce que l’on doit faire.","Agir avec trop de précipitation.","Contester systématiquement les décisions d’un chef.","Collectionner des timbres rares."],
+["Quérir","Chercher, aller chercher (quelqu’un ou quelque chose).","Guérir très lentement d’une blessure.","Poser une question avec insistance.","Peindre un mur à la chaux."],
+["Abscons","Difficile à comprendre, obscur.","Qui est caché sous la terre.","Qui est absent sans prévenir.","Qui ressemble à un cornet de glace."],
+["Alacrité","Vivacité joyeuse, entrain.","Rapidité à se mettre en colère.","État de grande fatigue.","Poisson de rivière à chair blanche."],
+["Dilapider","Dépenser sans compter, gaspiller.","Détruire à coups de pierres.","Diluer un liquide avec de l’eau.","Peindre sur un mur de pierre."],
+["Pléthore","Surabondance, excès de quelque chose.","Pénurie, manque cruel de quelque chose.","Grande assemblée du peuple dans la Grèce antique.","Poisson d’eau douce à la chair filandreuse."],
+["Rodomontade","Fanfaronnade, vantardise bruyante.","Chant de louange adressé à un saint.","Marche rapide vers la montagne.","Plat de viande cuit dans une feuille de chou."],
+["Lénifier","Adoucir, apaiser.","Rendre lisse avec de l’huile.","Diminuer de longueur.","Réciter à voix haute."],
+["Anachorète","Religieux qui vit dans la solitude, ermite.","Médecin de l’Antiquité.","Instrument de mesure des angles.","Étoile qui apparaît à l’aube."],
+["Sempiternel","Qui dure toujours, éternel.","Qui se répète tous les semestres.","Qui est semblable à un autre.","Qui a un goût de vinaigre."],
+["Galimatias","Discours confus et embrouillé.","Grande galette de blé.","Troupe de saltimbanques.","Étoffe de soie importée."],
+["Hirsute","Dont les cheveux ou les poils sont en désordre, ébouriffé.","Qui est très timide en public.","Qui est fabriqué en cuir de porc.","Qui est cuit dans l’huile d’olive."],
+["Interstice","Petit espace vide entre deux choses.","Intervalle de temps entre deux saisons.","Corps étranger dans une plaie.","Fruit sec du hêtre."],
+["Obséquieux","Qui fait preuve d’une politesse excessive et servile.","Qui assiste à des cérémonies funèbres.","Qui est d’une grande indifférence.","Qui sent le miel chaud."],
+["Zénith","Point du ciel situé à la verticale de l’observateur.","Point le plus bas atteint par un astre.","Direction du nord magnétique.","Pâtisserie en forme de couronne."],
+["Pérégrination","Voyage au loin, longue marche.","Retour d’un pèlerin chez lui.","Prière dite avant un voyage.","Soupe de poisson épicée."],
+["Lancinant","Qui se fait sentir par élancements douloureux.","Qui lance des objets avec adresse.","Qui est long et ennuyeux.","Qui chante sous la douche."],
+["Atavique","Hérité des ancêtres lointains, transmis depuis l’origine.","Qui se rapporte au voyage aérien.","Qui tient à l’éducation reçue pendant l’enfance.","Qui sent la lavande."]
+].map(a=>({mot:a[0],nature:"",vraie:a[1],fausses:[a[2],a[3]],absurde:a[4]}));
+
+const $=id=>document.getElementById(id),sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+let streak=0,best=0,locked=true,n=0,sample=null,filling=0,tok=0;const queue=[],used=[];
+try{best=+localStorage.getItem("kesako_best")||0}catch(e){}
+const upd=()=>{$("st").textContent="🔥 "+streak;$("bs").textContent="🏆 "+best;$("bestHome").textContent=best?"🏆 Meilleure série : "+best:""};
+upd();
+// décor : lettres et mots qui montent doucement
+(()=>{const t=["É","?","Késako","à","ç","Œ","mot","è","Â","sens","ù","ê","verbe","Ï"];
+$("bg").innerHTML="";for(let i=0;i<16;i++){const s=document.createElement("span");s.textContent=t[i%t.length];
+s.style.cssText=`left:${Math.random()*92}%;bottom:-5vh;font-size:${28+Math.random()*60}px;--t:${16+Math.random()*16}s;--w:${-Math.random()*20}s;--r:${(Math.random()*30-15)|0}deg;--dx:${(Math.random()*120-60)|0}px`;$("bg").appendChild(s)}})();
+
+function burst(el,count,big){
+  const r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2,cols=["#ffd77a","#e8734f","#4cc27a","#fff","#c9962e"];
+  for(let i=0;i<count;i++){const p=document.createElement("i");p.className="pt";p.style.background=cols[i%cols.length];document.body.appendChild(p);
+    const a=Math.random()*6.28,d=(big?90:50)+Math.random()*(big?200:90);
+    p.animate([{transform:`translate(${x}px,${y}px) scale(1)`,opacity:1},{transform:`translate(${x+Math.cos(a)*d}px,${y+Math.sin(a)*d+60}px) scale(.2)`,opacity:0}],{duration:900+Math.random()*500,easing:"cubic-bezier(.1,.7,.3,1)"}).onfinish=()=>p.remove()}
+}
+async function initSample(){try{if(window.claude&&claude.use)sample=await claude.use("sample")}catch(e){sample=null}}
+async function refill(){
+  if(!sample||filling>=2||queue.length+filling*5>=15)return;filling++;
+  const ls=sh("ABCDEFGHIJLMNOPQRSTUVZ".split("")).slice(0,5).join(", ");
+  const p=`Tu es lexicographe. Choisis 5 mots DIFFÉRENTS issus du dictionnaire de la langue française (Larousse, Robert, Académie française) : mots réels et attestés, de niveau moyen à difficile, variés (noms, verbes, adjectifs), commençant respectivement par les lettres : ${ls}. Évite ces mots déjà vus : ${used.slice(-60).join(", ")||"aucun"}.
+Pour chaque mot fournis : "mot" (orthographe exacte), "nature" (ex : nom féminin, verbe, adjectif), "vraie" (définition exacte du dictionnaire, reformulée, une phrase très courte de 12 mots maximum, sans citer le mot), "fausses" (tableau de 2 définitions fausses mais très crédibles, de même style et longueur que la vraie), "absurde" (une définition fausse, nettement absurde et drôle, rédigée comme une vraie définition).
+Réponds UNIQUEMENT par un tableau JSON : [{"mot":"","nature":"","vraie":"","fausses":["",""],"absurde":""}]`;
+  try{const r=await sample.json(p,{modelTier:"quick",cache:false});
+    (Array.isArray(r)?r:[]).forEach(w=>{if(w&&w.mot&&w.vraie&&Array.isArray(w.fausses)&&w.fausses.length>=2&&w.absurde&&!used.includes(w.mot)&&!queue.some(q=>q.mot===w.mot))queue.push(w)});
+  }catch(e){if(e&&e.code==="not_granted")sample=null}
+  filling--;
+}
+async function getWord(maxWait){
+  if(queue.length){const w=queue.shift();refill();return w}
+  if(sample){const t=Date.now();refill();
+    while(Date.now()-t<maxWait){if(queue.length){const w=queue.shift();refill();return w}if(!filling)break;await sleep(150)}}
+  const pool=W.filter(w=>!used.includes(w.mot));return sh(pool.length?pool:W)[0];
+}
+
+// Musique d’ambiance générée en direct (boîte à musique + nappes douces)
+const Mus={ctx:null,on:true,sfxOn:true,vol:.5,timer:null,next:0,step:0,
+  chords:[[220,261.6,329.6],[174.6,220,261.6],[196,261.6,329.6],[196,246.9,293.7]],
+  init(){if(this.ctx)return;const C=window.AudioContext||window.webkitAudioContext;if(!C)return;const c=this.ctx=new C();
+    this.master=c.createGain();this.master.gain.value=0;const lp=c.createBiquadFilter();lp.type="lowpass";lp.frequency.value=2200;
+    const dl=c.createDelay();dl.delayTime.value=.45;const fb=c.createGain();fb.gain.value=.38;dl.connect(fb);fb.connect(dl);
+    this.bus=c.createGain();this.bus.connect(lp);this.bus.connect(dl);dl.connect(lp);lp.connect(this.master);this.master.connect(c.destination);this.sfx=c.createGain();this.sfx.connect(c.destination)},
+  tone(f,t,d,type,g,a){const c=this.ctx,o=c.createOscillator(),e=c.createGain();o.type=type;o.frequency.value=f;
+    e.gain.setValueAtTime(0,t);e.gain.linearRampToValueAtTime(g,t+a);e.gain.exponentialRampToValueAtTime(.0001,t+d);
+    o.connect(e);e.connect(this.bus);o.start(t);o.stop(t+d+.05)},
+  sched(){const c=this.ctx;while(this.next<c.currentTime+1.2){const t=this.next,s=this.step,ch=this.chords[(s>>3)%4];
+      if(s%8===0){ch.forEach(f=>this.tone(f,t,5.4,"sine",.1,1.6));this.tone(ch[0]/2,t,5.4,"triangle",.14,1.2)}
+      if(Math.random()<.6)this.tone(ch[Math.random()*3|0]*(Math.random()<.5?2:4),t,2.2,"triangle",.09,.01);
+      this.next+=.6;this.step++}},
+  gain(){if(this.master){const t=this.ctx.currentTime;this.master.gain.setTargetAtTime(this.on?this.vol*.4:0,t,.1);this.sfx.gain.setTargetAtTime(this.vol,t,.1)}},
+  ensure(){this.init();if(this.ctx){this.ctx.resume();this.gain()}},
+  stone(f,t,d,type,g){const c=this.ctx,o=c.createOscillator(),e=c.createGain();o.type=type;o.frequency.value=f;
+    e.gain.setValueAtTime(0,t);e.gain.linearRampToValueAtTime(g,t+.01);e.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(e);e.connect(this.sfx);o.start(t);o.stop(t+d+.05)},
+  ok(){if(!this.sfxOn)return;this.ensure();if(!this.ctx)return;const t=this.ctx.currentTime+.01;
+    this.stone(784,t,.4,"sine",.3);this.stone(1175,t+.11,.7,"sine",.28);this.stone(2349,t+.11,.35,"sine",.05)},
+  ko(){if(!this.sfxOn)return;this.ensure();const c=this.ctx;if(!c)return;const t=c.currentTime+.01,o=c.createOscillator(),f=c.createBiquadFilter(),e=c.createGain();
+    o.type="sawtooth";o.frequency.setValueAtTime(130,t);o.frequency.exponentialRampToValueAtTime(90,t+.3);f.type="lowpass";f.frequency.value=500;
+    e.gain.setValueAtTime(0,t);e.gain.linearRampToValueAtTime(.2,t+.02);e.gain.setValueAtTime(.2,t+.18);e.gain.exponentialRampToValueAtTime(.0001,t+.34);
+    o.connect(f);f.connect(e);e.connect(this.sfx);o.start(t);o.stop(t+.4)},
+  snap(u,k){const c=this.ctx,s=c.createBufferSource();s.buffer=this.noise();s.loop=true;
+    const bp=c.createBiquadFilter();bp.type="bandpass";bp.frequency.value=1400;bp.Q.value=.9;
+    const g=c.createGain();g.gain.setValueAtTime(.0001,u);g.gain.exponentialRampToValueAtTime(.5*k,u+.012);g.gain.exponentialRampToValueAtTime(.0001,u+.12);
+    s.connect(bp);bp.connect(g);g.connect(this.sfx);s.start(u,Math.random());s.stop(u+.15)},
+  crackle(){if(!this._c){const c=this.ctx,sr=c.sampleRate,b=c.createBuffer(1,sr,sr),d=b.getChannelData(0);
+    for(let k=0;k<45;k++){const p=Math.random()*(sr-1500)|0,len=60+(Math.random()*350|0),a=Math.pow(Math.random(),1.5)*.9+.1;
+      for(let j=0;j<len;j++)d[p+j]+=(Math.random()*2-1)*a*Math.exp(-j/(len/4))}
+    this._c=b}return this._c},
+  air(t,d){const c=this.ctx,s=c.createBufferSource();s.buffer=this.noise();s.loop=true;
+    const lp=c.createBiquadFilter();lp.type="lowpass";lp.Q.value=.4;lp.frequency.setValueAtTime(600,t);lp.frequency.linearRampToValueAtTime(1800,t+d*.6);
+    const g=c.createGain();g.gain.setValueAtTime(0,t);g.gain.linearRampToValueAtTime(.22,t+d*.35);g.gain.linearRampToValueAtTime(0,t+d);
+    s.connect(lp);lp.connect(g);g.connect(this.sfx);s.start(t,Math.random());s.stop(t+d+.05);
+    this.snap(t+d*.9,d>.6?1:.5);if(false){const o=c.createOscillator(),e=c.createGain(),u=t+d*.92;o.type="sine";o.frequency.setValueAtTime(150,u);o.frequency.exponentialRampToValueAtTime(55,u+.14);
+      e.gain.setValueAtTime(.0001,u);e.gain.exponentialRampToValueAtTime(.12,u+.03);e.gain.exponentialRampToValueAtTime(.0001,u+.16);o.connect(e);e.connect(this.sfx);o.start(u);o.stop(u+.2)}},
+  noise(){if(!this._n){const c=this.ctx,b=c.createBuffer(1,c.sampleRate,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;this._n=b}return this._n},
+  flip(delay,d){if(!this.sfxOn)return;this.ensure();const c=this.ctx;if(!c)return;const t=c.currentTime+delay;
+    const s=c.createBufferSource();s.buffer=this.noise();s.loop=true;
+    const bp=c.createBiquadFilter();bp.type="bandpass";bp.Q.value=1.1;bp.frequency.setValueAtTime(1600,t);bp.frequency.linearRampToValueAtTime(3200,t+d);
+    const g=c.createGain(),n=64,cur=new Float32Array(n);for(let i=0;i<n;i++)cur[i]=Math.sin(Math.PI*i/(n-1))*(.7+Math.random()*.3)*.3;
+    g.gain.setValueCurveAtTime(cur,t,d);s.connect(bp);bp.connect(g);g.connect(this.sfx);s.start(t,Math.random()*.5);s.stop(t+d+.05)},
+  start(){if(!this.on)return;this.init();if(!this.ctx)return;this.ctx.resume();this.gain();
+    if(!this.timer){this.next=this.ctx.currentTime+.1;this.timer=setInterval(()=>this.sched(),250)}},
+  setOn(v){this.on=v;try{localStorage.setItem("kesako_mus",v?"1":"0")}catch(e){}
+    if(v)this.start();else{this.gain();clearInterval(this.timer);this.timer=null}},
+  setVol(v){this.vol=v;try{localStorage.setItem("kesako_vol",v)}catch(e){}this.gain()}};
+try{Mus.sfxOn=localStorage.getItem("kesako_sfx")!=="0";Mus.on=localStorage.getItem("kesako_mus")!=="0";const v=parseFloat(localStorage.getItem("kesako_vol"));if(v>=0&&v<=1)Mus.vol=v}catch(e){}
+$("musOn").checked=Mus.on;$("musVol").value=Math.round(Mus.vol*100);
+const closeS=()=>$("set").classList.add("hidden");
+$("gearH").onclick=$("gearG").onclick=()=>$("set").classList.remove("hidden");
+$("setX").onclick=closeS;$("set").onclick=e=>{if(e.target.id==="set")closeS()};
+$("sfxOn").checked=Mus.sfxOn;$("sfxOn").onchange=e=>{Mus.sfxOn=e.target.checked;try{localStorage.setItem("kesako_sfx",e.target.checked?"1":"0")}catch(x){}};
+$("musOn").onchange=e=>Mus.setOn(e.target.checked);$("musVol").oninput=e=>Mus.setVol(e.target.value/100);
+document.addEventListener("pointerdown",()=>Mus.start(),{once:true});
+const warmP=initSample().then(()=>{refill();refill()});
+function goHome(){
+  tok++;locked=true;const s=$("stage");s.classList.remove("go");s.classList.add("hidden");
+  document.querySelectorAll("#book .pg.gen").forEach(e=>e.remove());
+  $("turner").classList.add("hidden");$("turner").classList.remove("turn");$("inner").classList.remove("in");$("top").classList.remove("on");
+  $("home").classList.remove("hidden");$("home").style.animation="none";void $("home").offsetWidth;$("home").style.animation="";upd();
+}
+$("homeBtn").onclick=goHome;
+$("play").onclick=async()=>{
+  const my=++tok;Mus.start();
+  $("home").classList.add("hidden");$("stage").classList.remove("hidden");
+  const book=$("book");
+  for(let i=0;i<7;i++){const d=document.createElement("div");d.className="pg gen";d.style.setProperty("--d",(0.35+(6-i)*0.08).toFixed(2)+"s");d.style.setProperty("--z",(0.6+i*0.6).toFixed(1)+"px");book.insertBefore(d,$("turner"))}
+  streak=0;n=0;upd();
+  warmP.then(()=>{refill();refill()});
+  await sleep(120);if(my!==tok)return;
+  requestAnimationFrame(()=>requestAnimationFrame(()=>$("stage").classList.add("go")));
+  Mus.flip(.08,.8);for(let i=0;i<7;i++)Mus.flip(.38+(6-i)*.08,.5);
+  await sleep(1450);if(my!==tok)return;
+  $("top").classList.add("on");burst($("page"),36,true);await show(true,my);
+};
+
+async function show(first,my){
+  locked=true;
+  const w=await getWord(0);if(my!==tok)return;
+  if(first)$("inner").classList.remove("in");
+  else{const t=$("turner"),c=$("inner").cloneNode(true);c.removeAttribute("id");c.querySelectorAll("[id]").forEach(e=>e.removeAttribute("id"));c.className="";c.style.cssText="opacity:1;transform:none";t.innerHTML="";t.appendChild(c);t.classList.remove("hidden","turn");void t.offsetWidth;t.classList.add("turn");Mus.flip(.05,.9)}
+  used.push(w.mot);n++;
+  $("chap").textContent="Chapitre "+n;$("nat").textContent=w.nature||"";$("fb").innerHTML="";
+  $("mot").innerHTML="";[...w.mot].forEach((c,i)=>{const s=document.createElement("span");s.textContent=c===" "?"\u00a0":c;s.style.setProperty("--i",i);$("mot").appendChild(s)});
+  const o=sh([[w.vraie,1],[w.fausses[0],0],[w.fausses[1],0],[w.absurde,0]]);
+  $("opts").innerHTML="";
+  o.forEach((x,i)=>{const b=document.createElement("button");b.className="opt";b.style.setProperty("--k",i);b.innerHTML="<b>"+"ABCD"[i]+"</b><span></span>";b.lastChild.textContent=x[0];b.dataset.ok=x[1];b.onclick=()=>pick(b);$("opts").appendChild(b)});
+  $("page").scrollTop=0;$("inner").classList.add("in");setTimeout(()=>{locked=false},first?0:700);
+  if(first)refill();
+}
+function pick(b){
+  if(locked)return;locked=true;const good=b.dataset.ok==="1";
+  document.querySelectorAll(".opt").forEach(e=>{e.disabled=true;if(e.dataset.ok==="1")e.classList.add("ok")});
+  let msg;
+  if(good){streak++;if(streak>best){best=streak;try{localStorage.setItem("kesako_best",best)}catch(e){}}
+    msg="✅ Bravo ! "+(streak>1?streak+" bonnes réponses d’affilée !":"Bonne réponse !");burst(b,streak>=3?40:18,streak>=3);Mus.ok()}
+  else{b.classList.add("ko");Mus.ko();msg=streak>1?"❌ Raté… série interrompue à "+streak+".":"❌ Raté, la bonne réponse est en vert.";streak=0}
+  refill();refill();upd();if(good){$("st").classList.remove("hot");void $("st").offsetWidth;$("st").classList.add("hot")}
+  $("fb").innerHTML="<p></p><button class='btn' id='nx'>Page suivante →</button>";$("fb").firstChild.textContent=msg;
+  const my=tok;$("nx").onclick=()=>show(false,my);$("nx").scrollIntoView({block:"nearest",behavior:"smooth"});
+}
+</script></body></html>
