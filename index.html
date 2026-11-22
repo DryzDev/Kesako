@@ -25,12 +25,12 @@ main{min-height:100%;display:flex;flex-direction:column;align-items:center;justi
 /* accueil */
 #home{display:flex;flex-direction:column;align-items:center;text-align:center;animation:fadeUp .9s cubic-bezier(.2,.8,.2,1) both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(30px) scale(.96)}}
-.hbook{width:120px;height:150px;position:relative;margin-bottom:1.6rem;perspective:600px;transform:translateZ(0);will-change:transform;animation:bob 4s ease-in-out infinite}
+.hbook{width:120px;height:150px;position:relative;margin-bottom:1.6rem;perspective:600px}
 .hbook::after{content:"";position:absolute;left:8%;right:0;bottom:-18px;height:14px;background:radial-gradient(ellipse,rgba(0,0,0,.35),transparent 70%)}
 @keyframes bob{50%{transform:translate3d(0,-10px,0)}}
 .hbook i{position:absolute;inset:0;border-radius:4px 10px 10px 4px;transform-origin:left;background:linear-gradient(135deg,var(--cover),var(--cover2));border:2px solid var(--gold);backface-visibility:hidden;will-change:transform}
 .hbook i:nth-child(1){background:var(--paper);border-color:var(--line);transform:translateX(6px)}
-.hbook i:nth-child(2){animation:peek 4s ease-in-out infinite}
+.hbook i:nth-child(2){transform:rotateY(-28deg)}
 .hbook i:nth-child(2)::after{content:"?";position:absolute;inset:0;display:grid;place-items:center;font:800 3.4rem var(--ff);color:var(--gold)}
 @keyframes peek{50%{transform:rotateY(-35deg)}}
 h1{font:800 clamp(3.4rem,17vw,7rem)/1 var(--ff);margin:0;letter-spacing:-.02em;background:linear-gradient(100deg,var(--accent) 20%,var(--gold) 45%,var(--accent) 70%);background-size:100% 100%;-webkit-background-clip:text;background-clip:text;color:transparent}
@@ -38,7 +38,7 @@ h1{font:800 clamp(3.4rem,17vw,7rem)/1 var(--ff);margin:0;letter-spacing:-.02em;b
 .sub{opacity:.8;margin:.8rem 0 2.2rem;font-size:1.1rem;max-width:30ch;line-height:1.45}
 .btn{font:700 1.15rem var(--fb);border:0;border-radius:999px;padding:.85rem 2.2rem;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 85%,#fff),var(--accent));color:#fff;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.25),0 10px 30px color-mix(in srgb,var(--accent) 45%,transparent);transition:transform .12s,box-shadow .12s}
 .btn:active{transform:translateY(4px);box-shadow:0 2px 0 rgba(0,0,0,.25)}
-.btn.big{font-size:1.5rem;padding:1rem 3.4rem;letter-spacing:.04em;animation:pulse 2.4s ease-in-out infinite}
+.btn.big{font-size:1.5rem;padding:1rem 3.4rem;letter-spacing:.04em}
 @keyframes pulse{50%{transform:scale(1.06)}}
 .best{margin-top:1.5rem;opacity:.75;min-height:1.4em}
 /* scène */
@@ -105,6 +105,7 @@ main:has(#stage:not(.hidden)) #gearH{display:none}
 #set input[type=range]{flex:1;min-width:0}
 #set .btn{display:block;margin:1.2rem auto 0;padding:.6rem 1.8rem;font-size:1rem}
 .pt{position:fixed;z-index:50;width:9px;height:9px;border-radius:50%;pointer-events:none;left:0;top:0}
+@media (pointer:coarse){#bg span{animation:none;opacity:.07}}
 @media (prefers-reduced-motion:reduce){*{animation-duration:.01s!important;transition-duration:.01s!important}}
 </style></head><body>
 <div id="bg"></div>
@@ -255,6 +256,7 @@ const Mus={ctx:null,on:true,sfxOn:true,vol:.5,timer:null,next:0,step:0,
   setOn(v){this.on=v;try{localStorage.setItem("kesako_mus",v?"1":"0")}catch(e){}
     if(v)this.start();else{this.gain();clearInterval(this.timer);this.timer=null}},
   setVol(v){this.vol=v;try{localStorage.setItem("kesako_vol",v)}catch(e){}this.gain()}};
+["start","ensure","flip","ok","ko","setOn","setVol","gain"].forEach(k=>{const f=Mus[k];Mus[k]=function(...a){try{return f.apply(this,a)}catch(e){}}});
 try{Mus.sfxOn=localStorage.getItem("kesako_sfx")!=="0";Mus.on=localStorage.getItem("kesako_mus")!=="0";const v=parseFloat(localStorage.getItem("kesako_vol"));if(v>=0&&v<=1)Mus.vol=v}catch(e){}
 $("musOn").checked=Mus.on;$("musVol").value=Math.round(Mus.vol*100);
 const closeS=()=>$("set").classList.add("hidden");
@@ -282,7 +284,7 @@ $("play").onclick=async()=>{
   requestAnimationFrame(()=>requestAnimationFrame(()=>$("stage").classList.add("go")));
   Mus.flip(.08,.8);for(let i=0;i<7;i++)Mus.flip(.38+(6-i)*.08,.5);
   await sleep(1450);if(my!==tok)return;
-  $("top").classList.add("on");burst($("page"),36,true);await show(true,my);
+  $("top").classList.add("on");try{burst($("page"),36,true)}catch(e){}await show(true,my);
 };
 
 async function show(first,my){
