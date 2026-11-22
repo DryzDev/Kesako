@@ -277,7 +277,7 @@ $("play").onclick=async()=>{
   const my=++tok;Mus.start();
   $("home").classList.add("hidden");$("stage").classList.remove("hidden");
   const book=$("book");
-  for(let i=0;i<7;i++){const d=document.createElement("div");d.className="pg gen";d.style.setProperty("--d",(0.35+(6-i)*0.08).toFixed(2)+"s");d.style.setProperty("--z",(0.6+i*0.6).toFixed(1)+"px");book.insertBefore(d,$("turner"))}
+  for(let i=0;i<7;i++){const d=document.createElement("div");d.className="pg gen";d.style.setProperty("--d",(0.35+(6-i)*0.08).toFixed(2)+"s");d.style.setProperty("--z",(0.6+i*0.6).toFixed(1)+"px");book.insertBefore(d,$("cover"))}
   streak=0;n=0;upd();
   warmP.then(()=>{refill();refill()});
   await sleep(120);if(my!==tok)return;
