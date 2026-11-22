@@ -7,7 +7,6 @@
 <meta property="og:description" content="Un mot du dictionnaire, quatre définitions… saurez-vous trouver la bonne ?">
 <meta name="theme-color" content="#7a2e1d">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 100 100%27%3E%3Ctext y=%27.9em%27 font-size=%2790%27%3E📖%3C/text%3E%3C/svg%3E">
-
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;800&family=Lora:wght@400;600&display=swap">
 <style>
 :root{--bg:#f6eddb;--bg2:#e9d5ab;--ink:#2b1d12;--paper:#fffaf0;--accent:#b3402a;--gold:#c9962e;--ok:#2f8f4e;--ko:#c0392b;--line:#dfcb9f;--cover:#7a2e1d;--cover2:#45160b;
@@ -26,14 +25,15 @@ main{min-height:100%;display:flex;flex-direction:column;align-items:center;justi
 /* accueil */
 #home{display:flex;flex-direction:column;align-items:center;text-align:center;animation:fadeUp .9s cubic-bezier(.2,.8,.2,1) both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(30px) scale(.96)}}
-.hbook{width:120px;height:150px;position:relative;margin-bottom:1.2rem;perspective:600px;animation:bob 4s ease-in-out infinite}
-@keyframes bob{50%{transform:translateY(-10px)}}
-.hbook i{position:absolute;inset:0;border-radius:4px 10px 10px 4px;transform-origin:left;background:linear-gradient(135deg,var(--cover),var(--cover2));border:2px solid var(--gold);box-shadow:0 18px 30px rgba(0,0,0,.35)}
+.hbook{width:120px;height:150px;position:relative;margin-bottom:1.6rem;perspective:600px;transform:translateZ(0);will-change:transform;animation:bob 4s ease-in-out infinite}
+.hbook::after{content:"";position:absolute;left:8%;right:0;bottom:-18px;height:14px;background:radial-gradient(ellipse,rgba(0,0,0,.35),transparent 70%)}
+@keyframes bob{50%{transform:translate3d(0,-10px,0)}}
+.hbook i{position:absolute;inset:0;border-radius:4px 10px 10px 4px;transform-origin:left;background:linear-gradient(135deg,var(--cover),var(--cover2));border:2px solid var(--gold);backface-visibility:hidden;will-change:transform}
 .hbook i:nth-child(1){background:var(--paper);border-color:var(--line);transform:translateX(6px)}
 .hbook i:nth-child(2){animation:peek 4s ease-in-out infinite}
 .hbook i:nth-child(2)::after{content:"?";position:absolute;inset:0;display:grid;place-items:center;font:800 3.4rem var(--ff);color:var(--gold)}
 @keyframes peek{50%{transform:rotateY(-35deg)}}
-h1{font:800 clamp(3.4rem,17vw,7rem)/1 var(--ff);margin:0;letter-spacing:-.02em;background:linear-gradient(100deg,var(--accent) 20%,var(--gold) 45%,var(--accent) 70%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 5s linear infinite}
+h1{font:800 clamp(3.4rem,17vw,7rem)/1 var(--ff);margin:0;letter-spacing:-.02em;background:linear-gradient(100deg,var(--accent) 20%,var(--gold) 45%,var(--accent) 70%);background-size:100% 100%;-webkit-background-clip:text;background-clip:text;color:transparent}
 @keyframes shine{to{background-position:-250% 0}}
 .sub{opacity:.8;margin:.8rem 0 2.2rem;font-size:1.1rem;max-width:30ch;line-height:1.45}
 .btn{font:700 1.15rem var(--fb);border:0;border-radius:999px;padding:.85rem 2.2rem;background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 85%,#fff),var(--accent));color:#fff;cursor:pointer;box-shadow:0 6px 0 rgba(0,0,0,.25),0 10px 30px color-mix(in srgb,var(--accent) 45%,transparent);transition:transform .12s,box-shadow .12s}
@@ -68,6 +68,7 @@ button.pill:active{transform:translateY(2px)}
 .go .pg.turn{animation:turnpg 1.05s cubic-bezier(.45,.05,.3,1) both;z-index:5}
 .go .pg.turn::after{animation:shade 1.05s ease both}
 #turner{padding:clamp(20px,5vw,36px);overflow:hidden;background:var(--paper);box-shadow:0 0 30px rgba(0,0,0,.3)}
+#turner{z-index:5}
 #turner *{animation:none!important;transition:none!important}
 @keyframes turnpg{0%{transform:translateZ(var(--z)) rotateY(0);opacity:1}90%{opacity:1}100%{transform:translateZ(var(--z)) rotateY(-180deg);opacity:0}}
 @keyframes flip{0%{transform:translateZ(var(--z)) rotateY(0);opacity:1}72%{transform:translateZ(var(--z)) rotateY(-118deg);opacity:1}100%{transform:translateZ(var(--z)) rotateY(-180deg);opacity:0}}
@@ -118,9 +119,8 @@ main:has(#stage:not(.hidden)) #gearH{display:none}
 <div class="top" id="top"><button class="pill" id="homeBtn">🏠 Accueil</button><span class="pill streak" id="st">🔥 0</span><span class="pill" id="bs">🏆 0</span><button class="pill" id="gearG" aria-label="Réglages">⚙️</button></div>
 <div id="wrap"><div id="book">
 <div id="page"><div id="inner"><p class="chap" id="chap"></p><div class="orn">❦</div><h2 id="mot"></h2><p class="nat" id="nat"></p><div class="opts" id="opts"></div><div id="fb"></div></div></div>
-<div class="pg hidden" id="turner" style="--z:6px"></div>
 <div class="cv pg" id="cover" style="--z:5px"><span>📖</span><span>Késako ?</span><small>DICTIONNAIRE</small></div>
-</div></div></div>
+</div><div class="pg hidden" id="turner"></div></div></div>
 </main>
 <div id="set" class="hidden"><div class="card"><h3>Réglages</h3>
 <label><span>🎵 Musique</span><input type="checkbox" id="musOn"></label>
@@ -178,7 +178,7 @@ const upd=()=>{$("st").textContent="🔥 "+streak;$("bs").textContent="🏆 "+be
 upd();
 // décor : lettres et mots qui montent doucement
 (()=>{const t=["É","?","Késako","à","ç","Œ","mot","è","Â","sens","ù","ê","verbe","Ï"];
-$("bg").innerHTML="";for(let i=0;i<16;i++){const s=document.createElement("span");s.textContent=t[i%t.length];
+$("bg").innerHTML="";for(let i=0;i<8;i++){const s=document.createElement("span");s.textContent=t[i%t.length];
 s.style.cssText=`left:${Math.random()*92}%;bottom:-5vh;font-size:${28+Math.random()*60}px;--t:${16+Math.random()*16}s;--w:${-Math.random()*20}s;--r:${(Math.random()*30-15)|0}deg;--dx:${(Math.random()*120-60)|0}px`;$("bg").appendChild(s)}})();
 
 function burst(el,count,big){
@@ -289,7 +289,7 @@ async function show(first,my){
   locked=true;
   const w=await getWord(0);if(my!==tok)return;
   if(first)$("inner").classList.remove("in");
-  else{const t=$("turner"),c=$("inner").cloneNode(true);c.removeAttribute("id");c.querySelectorAll("[id]").forEach(e=>e.removeAttribute("id"));c.className="";c.style.cssText="opacity:1;transform:none";t.innerHTML="";t.appendChild(c);t.classList.remove("hidden","turn");void t.offsetWidth;t.classList.add("turn");Mus.flip(.05,.9)}
+  else{const t=$("turner"),c=$("inner").cloneNode(true);c.removeAttribute("id");c.querySelectorAll("[id]").forEach(e=>e.removeAttribute("id"));c.className="";c.style.cssText="opacity:1;transform:none";t.innerHTML="";t.appendChild(c);t.classList.remove("hidden");if(t._a)t._a.cancel();t._a=t.animate([{transform:"rotateY(0deg)",opacity:1},{opacity:1,offset:.9},{transform:"rotateY(-180deg)",opacity:0}],{duration:1050,easing:"cubic-bezier(.45,.05,.3,1)",fill:"both"});Mus.flip(.05,.9)}
   used.push(w.mot);n++;
   $("chap").textContent="Chapitre "+n;$("nat").textContent=w.nature||"";$("fb").innerHTML="";
   $("mot").innerHTML="";[...w.mot].forEach((c,i)=>{const s=document.createElement("span");s.textContent=c===" "?"\u00a0":c;s.style.setProperty("--i",i);$("mot").appendChild(s)});
